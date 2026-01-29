@@ -5,6 +5,7 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import { upload } from "../middlewares/multer.middleware.js"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -94,8 +95,53 @@ const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: update video details like title, description, thumbnail
     if(!videoId){
-      throw new ApiError(400, )
+      throw new ApiError(400, "Video ID is required")
     }
+
+    let thumbnailUrl;
+    // thumbnailUrl is defined to be used later if thumbnail is updated
+
+    const {title, description} = req.body
+
+    // we had upload.single("thumbnail") middleware in route so we can access using req.file and not req.files?.thumbnail?.[0]?.path which is used when multiple files are uploaded
+    const thumbnailLocalPath = req.file?.path;
+    if(thumbnailLocalPath){
+      const uploadThumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+      if(!uploadThumbnail){
+        throw new ApiError(500, "Thumbnail upload failed")
+      }
+      thumbnailUrl = uploadThumbnail.url
+    }
+    
+    if(!(title || description || thumbnailLocalPath)){
+      throw new ApiError(400, "Change title or description or thumbnail to update video")
+    }
+
+    const updateDetails = await Video.findByIdAndUpdate(
+      videoId,
+      {
+        $set:{
+          ...title && { title },
+          ...description && { description },
+          // this means ...thumbnailUrl && {thumbnail: thumbnailUrl} that if thumbnailUrl is defined then only add this key value pair to the object otherwise dont add anything
+          // this is done to avoid setting thumbnail to undefined if thumbnail is not updated
+          ...thumbnailUrl && {thumbnail: thumbnailUrl}
+        } 
+      },
+      {
+          new: true
+      }
+    )
+
+    if(!updateDetails){
+      throw new ApiError(404, "Video not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updateDetails, "Changes in the video saved successfully")
+    )
 })
 
 const deleteVideo = asyncHandler(async (req, res) => {
