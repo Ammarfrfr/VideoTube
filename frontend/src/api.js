@@ -6,16 +6,12 @@ const API_BASE = import.meta.env.VITE_API_URL;
 // FETCH (public routes)
 // --------------------
 export const getVideos = async () => {
-  const res = await fetch(`${API_BASE}/api/v1/videos`, {
-    credentials: "include",
-  });
+  // Use axios instance to ensure Authorization header (Bearer token) is sent when available.
+  const res = await api.get('/videos')
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch videos");
-  }
-
-  return res.json();
-};
+  // normalize responses: ApiResponse wrapper or direct data
+  return res?.data?.data || res?.data
+}
 
 // --------------------
 // AXIOS (auth + protected routes)
