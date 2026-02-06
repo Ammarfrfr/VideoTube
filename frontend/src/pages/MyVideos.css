@@ -1,0 +1,29 @@
+.myvideos-section {
+  padding: 16px;
+  max-width: 1000px
+}
+
+.myvideos-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap
+}
+
+.myvideos-section .error {
+  color: red
+}
+
+.management-bar{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.bulk-delete{
+  background:#ff4d4f;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+}
+.undo-bar{ margin-left:auto; display:flex; gap:8px; align-items:center }

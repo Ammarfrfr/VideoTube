@@ -1,0 +1,11 @@
+.home-section h2 {
+  margin-bottom: 0.5rem;
+}
+.home-error {
+  color: red;
+}
+.home-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}

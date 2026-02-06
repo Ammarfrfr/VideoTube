@@ -37,6 +37,10 @@
   padding: 2em;
 }
 
+.app-main {
+  padding: 1rem;
+}
+
 .read-the-docs {
   color: #888;
 }

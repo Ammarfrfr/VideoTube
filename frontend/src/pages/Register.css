@@ -1,0 +1,15 @@
+.register-form {
+  max-width: 640px;
+}
+
+.register-message {
+  margin-bottom: 8px;
+}
+
+.register-row {
+  margin-bottom: 8px;
+}
+
+.register-full {
+  width: 100%;
+}
